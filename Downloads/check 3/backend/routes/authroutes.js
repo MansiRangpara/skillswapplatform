@@ -3,7 +3,7 @@ import {
   forgotPassword,
   resetPassword,
   registerInstructor,
-  loginInstructor,
+  loginInstructor, 
 } from '../controllers/authController.js';
 
 const router = express.Router();
@@ -13,4 +13,6 @@ router.post('/reset-password/:token', resetPassword);
 router.post('/register', registerInstructor);
 router.post('/login-instructor', loginInstructor);
 
+
 export default router;
+

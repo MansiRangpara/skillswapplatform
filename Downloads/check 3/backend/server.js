@@ -2,8 +2,9 @@ import express from 'express';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import cors from 'cors';
-import instructorRoutes from './routes/authroutes.js'; // ✅ Correct import
-import authRoutes from './routes/authroutes.js'; 
+import courseRoutes from "./routes/courseroutes.js";
+import authRoutes from './routes/authroutes.js';
+
 dotenv.config();
 const app = express();
 
@@ -11,10 +12,13 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// API Routes
-app.use('/api/auth', authRoutes);
+// Routes
+app.use("/api/courses", courseRoutes);
 
-app.use('/api/instructors', instructorRoutes); // ✅ Use correct route handler
+const instructorRoutes = authRoutes; // alias authRoutes for instructors
+
+app.use('/api/auth', authRoutes);
+app.use('/api/instructors', authRoutes); // ✅ Use correct route handler
 
 // Connect to MongoDB
 mongoose.connect(process.env.MONGO_URI, {

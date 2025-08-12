@@ -1,9 +1,15 @@
 import React, { useState } from 'react';
 import { Search, Plus, Edit, Trash2, Eye, Play, Users, Star, Clock, DollarSign, BarChart3, TrendingUp, BookOpen } from 'lucide-react';
+import CreateCourse from './CreateCourse';
 
 const CourseManager = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedStatus, setSelectedStatus] = useState('all');
+  const [showCreateCourse, setShowCreateCourse] = useState(false);
+
+  if (showCreateCourse) {
+    return <CreateCourse onBack={() => setShowCreateCourse(false)} />;
+  }
 
   const statuses = [
     { id: 'all', name: 'All Courses' },
@@ -94,7 +100,7 @@ const CourseManager = () => {
     return matchesSearch && matchesStatus;
   });
 
-  const getStatusColor = (status) => {
+  const getStatusColor = (status: string) => {
     switch (status) {
       case 'published': return 'bg-green-100 text-green-800';
       case 'draft': return 'bg-gray-100 text-gray-800';
@@ -104,7 +110,7 @@ const CourseManager = () => {
     }
   };
 
-  const formatDate = (dateString) => {
+  const formatDate = (dateString: string | null) => {
     if (!dateString) return 'Not published';
     return new Date(dateString).toLocaleDateString('en-US', { 
       year: 'numeric', 
@@ -113,7 +119,7 @@ const CourseManager = () => {
     });
   };
 
-  const formatCurrency = (amount) => {
+  const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
       currency: 'USD',
@@ -134,7 +140,10 @@ const CourseManager = () => {
           <h2 className="text-2xl font-bold text-gray-900">Course Manager</h2>
           <p className="text-gray-600">Manage your courses and track performance</p>
         </div>
-        <button className="flex items-center space-x-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+        <button 
+          onClick={() => setShowCreateCourse(true)}
+          className="flex items-center space-x-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+        >
           <Plus className="w-4 h-4" />
           <span>Create Course</span>
         </button>
@@ -310,7 +319,10 @@ const CourseManager = () => {
               : "Try adjusting your search or filter criteria."
             }
           </p>
-          <button className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+          <button 
+            onClick={() => setShowCreateCourse(true)}
+            className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+          >
             Create Your First Course
           </button>
         </div>

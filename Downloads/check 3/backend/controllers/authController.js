@@ -3,6 +3,10 @@ import jwt from 'jsonwebtoken';
 import nodemailer from 'nodemailer';
 import crypto from 'crypto';
 import User from '../models/User.js';
+import slugify from 'slugify';
+
+
+
 
 // Forgot Password
 export const forgotPassword = async (req, res) => {
@@ -21,8 +25,8 @@ export const forgotPassword = async (req, res) => {
     const transporter = nodemailer.createTransport({
       service: 'gmail',
       auth: {
-        user: 'forevertimepass43@gmail.com',
-        pass: 'lyfpliehbdqfzazm',
+        user: process.env.GMAIL_USER,
+  pass: process.env.GMAIL_PASS,
       },
     });
 
@@ -95,12 +99,22 @@ export const registerInstructor = async (req, res) => {
 
 // Login
 export const loginInstructor = async (req, res) => {
+  console.log("Login request body:", req.body);
+
   const { email, password } = req.body;
+  if (!email || !password) {
+    return res.status(400).json({ message: "Email and password are required" });
+  }
+
   try {
     const user = await User.findOne({ email, role: 'instructor' });
+    console.log("Found user:", user);
+
     if (!user) return res.status(404).json({ message: 'Instructor not found' });
 
     const isMatch = await bcrypt.compare(password, user.password);
+    console.log("Password match:", isMatch);
+
     if (!isMatch) return res.status(400).json({ message: 'Invalid password' });
 
     const token = jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET, {
@@ -109,6 +123,7 @@ export const loginInstructor = async (req, res) => {
 
     res.status(200).json({ token, user: { email: user.email, role: user.role } });
   } catch (err) {
+    console.error(err);
     res.status(500).json({ message: 'Server error' });
   }
 };
